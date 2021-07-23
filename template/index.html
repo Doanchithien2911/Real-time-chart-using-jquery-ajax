@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script>
+
+
+
+var time=[];
+var temp=[];
+var humi=[];
+var count=0;
+function drawChart()
+{
+	$.ajax({url:"data",success:function(result){
+		time.push(result[0]);
+		temp.push(result[1]);
+		humi.push(result[2]);
+		$("#temp").text("temperature:"+Math.round(temp[temp.length-1]));
+		$("#humi").text("humidity:"+Math.round(humi[humi.length-1]));
+		count++;
+		if(count>20){
+			time.shift();
+			temp.shift();
+		}
+
+		new Chart("myChart", {
+  type: "line",
+  data: {
+    labels: time,
+    datasets: [{
+      fill: true,
+      borderColor: "rgba(255,0,0,0.5)",
+      data: temp
+    }]
+  },    
+  options: {
+    legend: {display: false},
+    title: {
+      display: true,
+      text: "temperature",
+      fontSize: 16
+    }
+  }
+}
+
+);
+
+	}
+
+	}
+		);
+
+}
+var draw=setInterval(drawChart,2000);
+</script>
+</head>
+<body>
+
+<canvas id="myChart" style="width:100%"></canvas>
+<p id="temp"></p>
+<p id="humi"></p>
+
+</body>
+</html>
